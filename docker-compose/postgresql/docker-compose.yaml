@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  intern-service:
+    # container_name: "intern-service"
+    build:
+      context: ../../
+      dockerfile: ./dockerfile
+    ports:
+      - "8887:8080"
+    depends_on:
+      - db1-service
+
+  db1-service:
+    # container_name: pg_container
+    image: bitnami/postgresql
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: SamplesDB
+    ports:
+      - "5432:5432"
+  db1-uiadmin:
+    # container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+    depends_on:
+      - db1-service
+    # volumes: 
+    #   - ./postgres-data:/var/lib/postgresql/data
+    #   # copy the sql script to create tables
+    #   - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
